@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>HoverClub:fb_eventpost</id>
+	<name>Facebook Topic, Event & Picture Post</name>
+	<type>modification</type>
+	<version>2.00</version>
+
+	<install for="2.0 - 2.0.99">
+		<modification type="file">modification.xml</modification>
+		<readme parsebbc="true">readme_bb.txt</readme>
+		<require-dir name="Sources" destination="$boarddir" />
+		<require-file name="fbcallb.php" destination="$boarddir" />
+		
+		<database>database.php</database>
+		<code>hook_install.php</code>
+		<redirect url="$scripturl?action=admin;area=modsettings;sa=fbevents" />
+	</install>
+		
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">modification.xml</modification>
+		<remove-file name="fbcallb.php" />
+		<remove-file name="$sourcedir/facebook.php" />
+		<remove-file name="$sourcedir/Subs-fbevents.php" />
+		<remove-file name="$sourcedir/base_facebook.php" />
+		<remove-file name="$sourcedir/fbevents.php" />
+		<code>hook_uninstall.php</code>
+	</uninstall>
+	
+</package-info>

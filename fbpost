@@ -1,0 +1,16 @@
+<NotepadPlus>
+    <Session activeView="0">
+        <mainView activeIndex="8">
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1560" startPos="0" endPos="0" selMode="0" lang="Normal Text" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\readme_bb.txt" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="PHP" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\fbcallb.php" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="PHP" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\hook_install.php" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="PHP" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\hook_uninstall.php" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="XML" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\modification.xml" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="XML" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\package-info.xml" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1680" startPos="0" endPos="0" selMode="0" lang="PHP" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\database.php" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="PHP" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\Sources\fb_events.php" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1680" startPos="0" endPos="0" selMode="0" lang="PHP" encoding="-1" filename="C:\Users\John\Documents\GitHub\FacebookPost\Sources\Subs-fbevents.php" />
+        </mainView>
+        <subView activeIndex="0" />
+    </Session>
+</NotepadPlus>

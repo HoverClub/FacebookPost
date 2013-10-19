@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- Released under the GNU/GPL license -->
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>HoverClub:fb_events</id>
+	<version>2.00</version>
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+			<add><![CDATA[
+	// Facebook post mod
+	$txt['fb_admin'] = 'FaceBook Post';
+	$txt['fbappid'] = 'Your FaceBook App Id:';
+	$txt['fbapphelp'] = 'Go to <a href="https://developers.fb.com/apps">https://developers.fb.com/apps</a> and click <i>Set Up a New App</i>. Follow the steps through setting up your application until you get to the App page. In the <i>Select how your app integrates with Facebook</i> under <i>Website with Facebook Login</i> enter the url of your SMF forum web site.  Copy your FaceBook App ID & Secret from the FB App setup page into the settings below <b>THEN CLICK SAVE</b> to get to the next step.';
+	$txt['fbappsecret'] = 'Your FaceBook App Secret:';
+	
+	$txt['fbsignin'] = 'This mod needs to be able to access your FaceBook account to get details of any groups you have joined or pages you administer.';
+	$txt['fbsignin2'] = '<br /><b>Click HERE to sign in to FaceBook.</b>';
+
+	$txt['fbtopics'] = 'Post (enable) new forum topics to Facebook';
+	$txt['fbtopicshdr'] = 'Text to include with the post link on FaceBook';
+	$txt['fbboards'] = 'Boards to post to FaceBook: <br /><span class="smalltext">You can select multiple boards by holding the control or shift keys down whilst clicking</span>';
+
+	$txt['fbevents'] = 'Add new forum events (from the calendar) to Facebook';
+	$txt['fbeventshdr'] = 'Text to include with the event link on FaceBook';
+
+	$txt['fbgalleries'] = 'SMF gallery categories to post pictures from. <br /><span class="smalltext">Use shift/click to select multiple categories.</span>';
+	$txt['fbimages'] = 'Add new pictures from SMF gallery to Facebook';
+	$txt['fbimagehdr'] = 'Text to include with a picture description on FaceBook';
+
+	$txt['fbpageids'] = 'Select the Facebook Pages and Groups you wish to post to:<br /><span class="smalltext">Use shift/click to select more than one groups or pages.</span>';
+	$txt['facebook_yourprofile'] = 'Your FaceBook Wall';
+]]>
+			</add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="after"><![CDATA[		// Delete it?
+]]></search>
+			<add><![CDATA[
+		// FB remove event
+		if (isset($_REQUEST['deleteevent']) AND $modSettings['fbevents'])
+		{
+			require_once($sourcedir . '/fb_events.php');
+			fbEventRemove();
+		}
+	]]>
+			</add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[(int) $_REQUEST['year']);]]></search>
+			<add><![CDATA[
+			// FB modify event
+			global $scripturl;
+			if ($modSettings['fbevents'])
+			{
+				$eventOptions = array(
+						'end_date' => strftime('%Y-%m-%d', $start_time + $span * 86400),
+						'start_date' => strftime('%Y-%m-%d', $start_time),
+						'id_event' => $_REQUEST['eventid'],
+						'title' => $smcFunc['htmlspecialchars']($_REQUEST['evtitle'], ENT_QUOTES),
+						'topic' => $fbrow['id_topic'],
+					);
+				require_once($sourcedir . '/fb_events.php');
+				fbEventModify($eventOptions);
+			}
+	]]>
+			</add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="after"><![CDATA[// What if we want to export new topics out to a CMS?]]></search>
+			<add><![CDATA[
+		if ($modSettings['fbtopics'] AND !isset($_POST['calendar']))
+		{
+			global $sourcedir;
+			require_once($sourcedir . '/fb_events.php');
+			fbPost($msgOptions['subject'], $topicOptions['id'], $topicOptions['board']);
+		}
+	]]>
+			</add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Calendar.php">
+		<!-- insert new event -->
+		<operation>
+			<search position="before"><![CDATA[	// Insert the event!]]></search>
+			<add><![CDATA[
+	$eventOptions['fbId'] = 0;
+	if ($modSettings['fbevents'])
+	{
+		global $sourcedir, $scripturl;
+		require_once($sourcedir . '/fb_events.php');
+		$eventOptions['fbId'] = fbEventPost($eventOptions);
+	}
+	]]>
+			</add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA['id_board' => 'int',]]></search>
+			<add><![CDATA[ 'id_facebook' => 'string',]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$eventOptions['board'],]]></search>
+			<add><![CDATA[$eventOptions['fbId'],]]></add>
+		</operation>
+		
+		<!-- modify event -->
+		<operation>
+			<search position="after"><![CDATA[$smcFunc['db_query']('', '
+		UPDATE]]></search>
+			<add><![CDATA[
+		global $modSettings, $scripturl, $sourcedir;
+		if ($modSettings['fbevents'])
+		{
+			require_once($sourcedir . '/fb_events.php');
+			fbEventModify($eventOptions);
+		}
+	]]>
+			</add>
+		</operation>
+
+		<!-- remove event -->
+		<operation>
+			<search position="after"><![CDATA[$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}calendar
+		]]></search>
+			<add><![CDATA[
+		global $modSettings, $sourcedir;
+		if ($modSettings['fbevents'])
+		{
+			require_once($sourcedir . '/fb_events.php');
+			fbEventRemove();
+		}
+	]]>
+			</add>
+		</operation>
+	</file>
+	
+	<!-- SMF gallery support, if installed! -->
+	<file name="$sourcedir/Gallery2.php" error="skip">
+		<operation>
+			<search position="after"><![CDATA[			// Create the Database entry]]></search>
+			<add><![CDATA[
+		if ($modSettings['fbimages'])
+		{
+			global $sourcedir, $user_info;
+			require_once($sourcedir . '/fb_events.php');
+			$image = array('filename' => $filename, 'title' => $title, 'description' => $description, 'username' => $txt['posted_by'] . ' ' . $user_info['name']);
+			fbImage($image, $cat);
+		}
+	]]>
+			</add>
+		</operation>
+	</file>
+
+</modification>
